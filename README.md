@@ -19,26 +19,26 @@
 flowchart TB
     Client[Клиент]
     
-    subgraph Docker["Docker контейнер"]
-        subgraph Middleware["Слой Middleware"]
+    subgraph DockerContainer[Docker контейнер]
+        subgraph MiddlewareLayer[Слой Middleware]
             Logger[Logger]
             Recover[Recover]
             Metrics[Prometheus метрики]
-            RateLimit[Rate Limiter<br/>100K RPS]
+            RateLimit[Rate Limiter]
         end
         
-        subgraph Router["Fiber Router"]
-            Health[/health]
-            MetricsEP[/metrics]
-            API[/api/users]
+        subgraph RouterLayer[Fiber Router]
+            Health[health endpoint]
+            MetricsEP[metrics endpoint]
+            API[api/users endpoint]
         end
         
-        subgraph Handlers["Слой обработчиков"]
-            UserHandler[User Handlers<br/>CRUD операции]
+        subgraph HandlersLayer[Слой обработчиков]
+            UserHandler[User Handlers CRUD]
         end
         
-        subgraph Storage["Слой хранения"]
-            MemStore[sync.Map<br/>In-Memory хранилище<br/>atomic.Uint64 ID]
+        subgraph StorageLayer[Слой хранения]
+            MemStore[sync.Map In-Memory]
         end
     end
     
@@ -46,11 +46,11 @@ flowchart TB
     Logger --> Recover
     Recover --> Metrics
     Metrics --> RateLimit
-    RateLimit --> Router
+    RateLimit --> RouterLayer
     
-    Router -->|/api/users| API
-    Router -->|/health| Health
-    Router -->|/metrics| MetricsEP
+    RouterLayer --> API
+    RouterLayer --> Health
+    RouterLayer --> MetricsEP
     
     API --> UserHandler
     UserHandler --> MemStore
