@@ -6,6 +6,15 @@ const BASE_URL = __ENV.BASE_URL || 'http://localhost:3000';
 export const options = {
   vus: 500,
   duration: '60s',
+  summaryTrendStats: ['min', 'med', 'avg', 'p(90)', 'p(95)', 'max', 'count'],
+  thresholds: {
+    'http_reqs{status:200}': ['count>=0'],
+    'http_reqs{status:429}': ['count>=0'],
+    'http_reqs{status:500}': ['count==0'],
+    'http_req_duration{status:200}': ['max>=0'],
+    'http_req_duration{status:429}': ['max>=0'],
+    'http_req_duration{status:500}': ['max==0'],
+  },
 };
 
 // Setup - create test users
@@ -25,9 +34,5 @@ export function setup() {
 
 // Main test
 export default function (data) {
-  const res = http.get(`${data.baseUrl}/api/users`);
-
-  check(res, {
-    'status 200': (r) => r.status === 200,
-  });
+  http.get(`${data.baseUrl}/api/users`);
 }

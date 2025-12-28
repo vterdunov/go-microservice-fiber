@@ -92,7 +92,7 @@ func main() {
 
 	// Rate limiter: 1000 requests per second
 	app.Use(limiter.New(limiter.Config{
-		Max:        100000,
+		Max:        1000,
 		Expiration: 1 * time.Second,
 		LimitReached: func(c *fiber.Ctx) error {
 			return c.Status(fiber.StatusTooManyRequests).JSON(fiber.Map{
